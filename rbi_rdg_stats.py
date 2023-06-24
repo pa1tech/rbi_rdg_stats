@@ -15,7 +15,6 @@ except:
 	existing = []
 	df = pd.DataFrame()
 
-
 driver.get("https://rbiretaildirect.org.in/#/about_statistics")
 text = driver.page_source
 driver.quit()
@@ -23,6 +22,7 @@ driver.quit()
 for stats in re.findall("RD Statistics [0-9]+.pdf",text):
 
 	if (int(stats[-12:-4]) not in existing):
+		print(stats)
 		pdfUrl = "https://rbiretaildirect.org.in/stats/RD%20Statistics%20"+ stats[-12:-4]+".pdf"
 		pdfBytes = io.BytesIO(requests.get(pdfUrl).content)
 
@@ -46,18 +46,26 @@ for stats in re.findall("RD Statistics [0-9]+.pdf",text):
 			else:
 				word = word + pdfStrings[i]
 
-		date = words[8] + " " + words[9] + " " + words[10][:-1]
-		df1 = pd.DataFrame({"Date Code":[int(stats[-12:-4])],
+		#date = words[8] + " " + words[9] + " " + words[10][:-1]
+		date = stats[-12:-10] + "/" + stats[-10:-8] + "/" + stats[-8:-4]
+
+		'''df1 = pd.DataFrame({"Date Code":[int(stats[-12:-4])],
 							"Date":[date],
 							"Total Accounts #":[words[21]],
 							"T-bills Subscriptions (in ₹Cr)":[numbers[6]],
 							"T-bills Holdings (in ₹Cr)":[numbers[16]],
-							"SGB Holdings (in kg)":[numbers[17]]   })
+							"SGB Holdings (in kg)":[numbers[17]]   })'''
+		df1 = pd.DataFrame({"Date Code":[int(stats[-12:-4])],
+							"Date":[date],
+							"Total Accounts #":[words[21]],
+							"T-bills Subscriptions (in ₹Cr)":[numbers[5]],
+							"T-bills Holdings (in ₹Cr)":[numbers[15]],
+							"SGB Holdings (in kg)":[numbers[16]]   })
 		df = pd.concat((df,df1))
 
 
 
-df['Date'] = pd.to_datetime(df['Date'])
+df['Date'] = pd.to_datetime(df['Date'],dayfirst=True)
 df = df.sort_values(by='Date',ascending=True, ignore_index=True)
 df['Date'] = df['Date'].dt.strftime('%d %b, %Y')
 df.to_excel("RBI_RDG_Stats.xlsx",sheet_name="Sheet1",index = False)
