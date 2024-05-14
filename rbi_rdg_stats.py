@@ -57,7 +57,7 @@ for stats in re.findall("RD Statistics [0-9]+.pdf",text):
 							"SGB Holdings (in kg)":[numbers[17]]   })'''
 		df1 = pd.DataFrame({"Date Code":[int(stats[-12:-4])],
 							"Date":[date],
-							"Total Accounts #":[words[21]],
+							"Total Accounts #":[words[22]],
 							"T-bills Subscriptions (in ₹Cr)":[numbers[5]],
 							"T-bills Holdings (in ₹Cr)":[numbers[15]],
 							"SGB Holdings (in kg)":[numbers[16]]   })
