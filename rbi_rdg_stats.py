@@ -2,10 +2,17 @@ from selenium.webdriver import Chrome
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 import pandas as pd
-import re,io,requests
+import re,io,requests,os
 from pdfreader import SimplePDFViewer
 
-driver = Chrome(service=Service(ChromeDriverManager().install()))
+chrome_install = ChromeDriverManager().install()
+
+folder = os.path.dirname(chrome_install)
+chromedriver_path = os.path.join(folder, "chromedriver.exe")
+
+driver = Chrome(service=Service(chromedriver_path))
+
+#driver = Chrome(service=Service(ChromeDriverManager().install()))
 excel_file = "RBI_RDG_Stats.xlsx"
 
 try:
